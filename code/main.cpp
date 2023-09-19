@@ -33,7 +33,7 @@ using std::invalid_argument;
 #include <unistd.h>
 // using isatty;
 
-#include "solver.h"
+#include "solver.hpp"
 
 int main() {
     // first line is empty to look pretty
