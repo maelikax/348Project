@@ -7,11 +7,11 @@
 #include <cmath>
 
 using namespace std;
-stack <string> opStack;
-queue <string> numStack;
+stack <char> opStack;
+stringstream print;
 map <char, int> opMap = {{'+', 1}, {'-', 1}, {'*', 2}, {'/', 2}, {'^', 3}};
 
-int math(int a, int b, char op){
+float math(float a, float b, char op){
     switch (op){
         case '+':
             return a + b;
@@ -23,6 +23,8 @@ int math(int a, int b, char op){
             return a/b;
         case '^':
             return pow(a, b);
+        default:
+            return 0;
     }
 }
 
@@ -31,28 +33,23 @@ void shunyard(const string& input){
         if (isspace(input[i])){
             continue;
         }
+        if (isdigit(input[i]) || input[i] == '.'){
+            print << input[i];
+        }
         else if (input[i] == '('){
-            opStack.push("(");
+            opStack.push('(');
         }
         else if (input[i] == ')'){
-            while (opStack.top() != "("){
-                numStack.push(opStack.top());
+            while (!opStack.empty() && opStack.top() != '('){
+                print << opStack.top();
                 opStack.pop();
             }
             opStack.pop();
         }
-        else if (isdigit(input[i])){
-            string num;
-            while (isdigit(input[i])){
-                num += input[i];
-                input[i] = input[++i];
-            }
-            numStack.push(num);
-            i--;
-        }
         else if (opMap.count(input[i])){
-            while (!opStack.empty() && opMap[opStack.top()] >= opMap[input[i]]){
-                numStack.push(opStack.top());
+            print << ' ';
+            while (!opStack.empty() && opStack.top() != '(' && opMap[opStack.top()] >= opMap[input[i]]){
+                print << opStack.top();
                 opStack.pop();
             }
             opStack.push(input[i]);
@@ -60,25 +57,43 @@ void shunyard(const string& input){
         
     }
     while (!opStack.empty()){
-        numStack.push(opStack.top());
+        print << ' ' << opStack.top();
         opStack.pop();
-    
+    }
+
 }
+
+float calculate(const string& input){
+    stack <float> solve;
+    float num1, num2;
+    for (int i = 0; i < input.size(); i++){
+        if (isspace(input[i])){
+            continue;
+        }
+        if (isdigit(input[i]) || input[i] == '.'){
+            float num = 0;
+            while (isdigit(input[i]) || input[i] == '.'){
+                num = num * 10 + input[i] - '0';
+                i++;
+            }
+            i--;
+            solve.push(num);
+        }
+        else if (opMap.count(input[i])){
+            num2 = solve.top();
+            solve.pop();
+            num1 = solve.top();
+            solve.pop();
+            solve.push(math(num1, num2, input[i]));
+        }
+    }
+    return solve.top();
 }
 
 int main(){
-    string input;
-    getline(cin, input);
+    string input = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
     shunyard(input);
-    while (!numStack.empty()){
-        cout << numStack.front() << " ";
-        numStack.pop();
-    }
-    cout << endl;
+    cout << print.str() << endl;
+    cout << calculate(print.str()) << endl;
     return 0;
 }
-
-
-
-
-    
