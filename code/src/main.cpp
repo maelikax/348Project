@@ -2,7 +2,7 @@
  * TEAM ORANGE
  * 
  * EECS 348 Expression Solver Project
- * main.c
+ * main.cpp
  *   expression REPL, with handling for CRLF and LF
  *   line endings, and stdin and stdout re-routing.
  * 
@@ -15,7 +15,7 @@
  * 
  * Last Edited:
  *   Adam Albee (2888458)
- *   19 September 2023
+ *   29 November 2023
  *****/
 
 #include <iostream>
@@ -27,13 +27,11 @@ using std::getline;
 #include <string>
 using std::string;
 
-#include <exception>
-using std::invalid_argument;
-
 #include <unistd.h>
 // using isatty;
 
 #include "solver.hpp"
+// using parse_error, ComputeExpression
 
 int main() {
     // first line is empty to look pretty
@@ -95,7 +93,7 @@ int main() {
         try {
             result = ComputeExpression(input);
             cout << "Result: " << result << "\n" << endl;
-        } catch ( const invalid_argument& err ) {
+        } catch ( const parse_error& err ) {
             cout << "Error: " << err.what() << "\n" << endl;
         }
     }
