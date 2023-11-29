@@ -22,12 +22,15 @@
  *****/
 
 #include "solver.hpp"
+#include "token.hpp"
+using std::string;
 
 // Public interface: just this function!
 double ComputeExpression( string input ) {
-    if ( input == "throw" ) {
-        throw parse_error("example exception");
-    }
+    auto toks = Tokenize(input);
 
-    return -420.69;
+    // TODO: Shunting Yard
+    // TODO: RPN Solver
+
+    return (double)toks.size();
 }

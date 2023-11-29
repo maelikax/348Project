@@ -1,3 +1,22 @@
+/*****
+ * TEAM ORANGE
+ * 
+ * EECS 348 Expression Solver Project
+ * shunyard.cpp
+ *   Implementation of Djikstra's Shunting Yard algorithm to reorganize the
+ *   infix-formatted input token stream into a postfix (aka Reverse Polish Notation)
+ *   output token stream
+ * 
+ * Created:
+ *   Mahgoub Husien
+ *   27 November 2023
+ * 
+ * Last Edited:
+ *   Adam Albee (2888458)
+ *   29 November 2023
+ *****/
+
+
 #include <iostream>
 #include <stack>
 #include <sstream>

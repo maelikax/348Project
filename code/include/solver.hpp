@@ -18,7 +18,6 @@
 #define SOLVER_HPP
 
 #include <string>
-using std::string;
 
 // TODO: move this into its own `parse_error.h` file?
 #include <stdexcept>
@@ -32,6 +31,6 @@ struct parse_error : std::runtime_error {
 // ComputeExpression will throw an above `parse_error` exception for any error
 // state caused by invalid expressions. Any other kind of exception is due to
 // mistakes or bugs in the code!
-double ComputeExpression( string input );
+double ComputeExpression( std::string input );
 
 #endif // SOLVER_HPP

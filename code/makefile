@@ -14,10 +14,10 @@ CFLAGS=-I$(IDIR) -g -Og -Wall -Werror -Wpedantic
 LIBS=-lm
 
 
-_DEPS = solver.hpp
+_DEPS = solver.hpp token.hpp
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o solver.o
+_OBJ = main.o solver.o token.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # TODO: make object files only depend on the headers they actually use!

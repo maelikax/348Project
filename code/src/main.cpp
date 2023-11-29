@@ -41,13 +41,18 @@ int main() {
          << "              ====    =====    ====               \n"
          << "                                                  \n"
          << "Please enter equations using only these operators:\n"
-         << " - addition (+)                                   \n"
-         << " - subtraction (-)                                \n"
-         << " - multiplication (*)                             \n"
-         << " - division (/)                                   \n"
-         << " - exponentiation (^ or **)                       \n"
+         << " - addition (a + b)                               \n"
+         << " - unary positive (+a)                            \n"
+         << " - subtraction (a - b)                            \n"
+         << " - unary negation (-a)                            \n"
+         << " - multiplication (a * b)                         \n"
+         << " - division (a / b)                               \n"
+         << " - exponentiation (a ^ b or a ** b)               \n"
          << "                                                  \n"
-         << "Parentheses and unary (+) and (-) are supported!  \n"
+         << "For precedence handling, both parentheses `()` and\n"
+         << "square brackets `[]` are supported!               \n"
+         << "                                                  \n"
+         << "To exit the program, enter 'quit' or use Ctrl+D.  \n"
          << "                                                  \n"
          << "              ====    =====    ====               \n"
          << endl; // additional newline + flushes stdout
@@ -89,6 +94,8 @@ int main() {
         } else if ( cin.eof() ) {
             cout << endl;
         }
+
+        if ( input == "quit" ) break;
 
         try {
             result = ComputeExpression(input);
