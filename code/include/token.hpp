@@ -17,7 +17,7 @@
 #include <string>
 #include <queue>
 
-enum class TokenType   { Number, LBracket, RBracket, Operator };
+enum class TokenType   { Number, OpenBracket, CloseBracket, Operator };
 enum class Operator    { Add, Sub, Neg, Mul, Div, Mod, Exp };
 enum class BracketType { Square, Paren };
 
