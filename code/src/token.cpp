@@ -166,14 +166,14 @@ queue<Token_t> Tokenize( const string input ) {
                         if ( ch == '_' || ch == ',' ) { continue; } // ignore separator characters
                         if ( ch == 'e' || ch == 'E' ) {
                             if ( inExponent ) { throw parse_error("Invalid Numeric Constant: scientific notation invalid exponent"); } 
-                            if ( !hasDigits ) { throw parse_error("Invalid Numeric Constant: scientific notation missing mantissa"); }
+                            if ( !hasDigits ) { throw parse_error("Invalid Numeric Constant: scientific notation invalid mantissa"); }
                             decimalUsed = true; // no decimal allowed in exponent
                             hasDigits = false; // exponent must have its own digits
                             inExponent = true;
                             numStr << ch;
                             if ( input[pos+1] == '+' || input[pos+1] == '-' ) {
-                                pos++;
                                 numStr << input[pos+1];
+                                pos++;
                             }
                             continue;
                         }
@@ -191,15 +191,16 @@ queue<Token_t> Tokenize( const string input ) {
                         }
 
                         // not a digit, separator, decimal, or `e`, we're done parsing this number!
-                        if ( !hasDigits ) {
-                            if ( inExponent ) {
-                                throw parse_error("Invalid Numeric Constant: scientific notation invalid exponent");
-                            } else {
-                                throw parse_error("Invalid Numeric Constant: number contains no digits");
-                                // TODO: specific error messages for weird digit separator use? Currently they are ignored entirely!
-                            }
-                        }
                         break;
+                    }
+
+                    if ( !hasDigits ) {
+                        if ( inExponent ) {
+                            throw parse_error("Invalid Numeric Constant: scientific notation invalid exponent");
+                        } else {
+                            throw parse_error("Invalid Numeric Constant: number contains no digits");
+                            // TODO: specific error messages for weird digit separator use? Currently they are ignored entirely!
+                        }
                     }
 
                     numStr >> tok.value;
