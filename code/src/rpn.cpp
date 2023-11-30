@@ -26,6 +26,7 @@ using std::stack;
 using std::fmod;
 using std::pow;
 using std::isnan;
+using std::isinf;
 
 double evalrpn( std::queue<Token_t> tokens ) {
     stack<double> nums;
@@ -88,14 +89,19 @@ double evalrpn( std::queue<Token_t> tokens ) {
                 case Operator::Div: {
                     if ( b == 0 ) { throw parse_error("Undefined Operation: Division by Zero"); }
                     res = a / b;
+                    if ( isnan (res) ) { throw parse_error("Undefined Operation: Infinity / Infinity"); }
                 } break;
 
                 case Operator::Mod: {
+                    if ( b == 0 ) { throw parse_error("Undefined Operation: Modulo Division by Zero"); }
+                    if ( isinf(a) ) { throw parse_error("Undefined Operation: Modulus of Infinity"); }
                     res = fmod(a, b);
                 } break;
 
                 case Operator::Exp: {
-                    if ( a == 0 && b == 0 ) { throw parse_error("Undefined Operation: 0^0"); }
+                    if ( a == 0 && b == 0   ) { throw parse_error("Undefined Operation: 0 ^ 0"); }
+                    if ( a == 1 && isinf(b) ) { throw parse_error("Undefined Operation: 1 ^ Infinity"); }
+                    if ( isinf(a) && b == 0 ) { throw parse_error("Undefined Operation: Infinity ^ 0"); }
                     res = pow(a, b);
                     if ( isnan(res) ) { throw parse_error("Undefined Operation: Even Root of Negative Value"); }
                 } break;
