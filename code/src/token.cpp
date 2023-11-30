@@ -63,18 +63,21 @@ queue<Token_t> Tokenize( const string input ) {
 
 
             // OPERATORS
-            case '+': { // handles binary Add, discards unary Pos (since it is effectively a no-op in this grammar)
+            // inserting unary Positive as an operator (even though it is effectively a no-op) fixes a bug in the
+            //     shunting yard algorithm; `(+)` parses to `[(,)]` without unary Pos, giving the incorrect error message
+            //     for an empty subexpression, when the *correct* error will be caught by the rpn evaluator: missing operands
+            case '+': { // handles binary Add && unary Pos
                 tok.type = TokenType::Operator;
                 tok.op = Operator::Add;
                 // discard unary Positive:
                 if ( tokens.empty() ) {
-                    pos++;
-                    continue;
+                    tok.op = Operator::Pos;
+                    break;
                 } else {
                     Token_t prev = tokens.back();
                     if ( prev.type == TokenType::Operator || prev.type == TokenType::OpenBracket ) {
-                        pos++;
-                        continue;
+                        tok.op = Operator::Pos;
+                        break;
                     }
                 }
             } break;

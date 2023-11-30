@@ -5,7 +5,7 @@
  * shunyard.cpp
  *   Implementation of Djikstra's Shunting Yard algorithm to reorganize the
  *   infix-formatted input token stream into a postfix (aka Reverse Polish Notation)
- *   output token stream
+ *   output token stream, both streams of the form std::queue<Token_t>
  * 
  * Created:
  *   Mahgoub Husien
@@ -13,106 +13,117 @@
  * 
  * Last Edited:
  *   Adam Albee (2888458)
- *   29 November 2023
+ *   30 November 2023
  *****/
 
+#include "shunyard.hpp"
+using std::queue;
+// using Token_t; + associated enums
 
-#include <iostream>
+#include "solver.hpp"
+// using parse_error;
 #include <stack>
-#include <sstream>
-#include <string>
+using std::stack;
 #include <map>
-#include <queue>
+using std::map;
 #include <cmath>
+// using pow;
 
-using namespace std;
-stack <char> opStack;
-stringstream print;
-map <char, int> opMap = {{'+', 1}, {'-', 1}, {'*', 2}, {'/', 2}, {'^', 3}};
 
-float math(float a, float b, char op){
-    switch (op){
-        case '+':
-            return a + b;
-        case '-':
-            return a - b;
-        case '*':
-            return a*b;
-        case '/':
-            return a/b;
-        case '^':
-            return pow(a, b);
-        default:
-            return 0;
+static map<Operator,bool> isLeftAssociatve = {
+    {Operator::Add, true},
+    {Operator::Pos, false},
+    {Operator::Sub, true},
+    {Operator::Neg, false},
+    {Operator::Mul, true},
+    {Operator::Div, true},
+    {Operator::Mod, true},
+    {Operator::Exp, false}
+};
+
+// larger number = higher precedence
+static map<Operator,int> precedence = {
+    {Operator::Add, 1},
+    {Operator::Sub, 1},
+    {Operator::Mul, 2},
+    {Operator::Div, 2},
+    {Operator::Mod, 2},
+    {Operator::Pos, 3},
+    {Operator::Neg, 3},
+    {Operator::Exp, 3} 
+};
+
+
+// TODO: memory management concerns:
+//       pass `tokens` by const reference + iterate instead of `pop`?
+//       pre-allocate `output` size and/or reuse input queue?
+queue<Token_t> shunyard( queue<Token_t> tokens ) {
+    queue<Token_t> output;
+    stack<Token_t> opStack;
+
+    bool lastTokenWasOpenBracket = false;
+    while ( !tokens.empty() ) {
+        Token_t tok = tokens.front();
+        tokens.pop();
+
+        switch ( tok.type ) {
+            case TokenType::Number: {
+                lastTokenWasOpenBracket = false;
+                output.push(tok);
+            } break;
+
+            case TokenType::OpenBracket: {
+                lastTokenWasOpenBracket = true;
+                opStack.push(tok);
+            } break;
+
+            case TokenType::CloseBracket: {
+                if ( lastTokenWasOpenBracket ) { throw parse_error("Bracketed Subexpression is Empty"); }
+                // NOTE: should mismatched/unbalanced bracket have a higher error priority than empty contents?
+                lastTokenWasOpenBracket = false;
+                bool matched = false;
+
+                // move operators from the stack to the output, until a matching open bracket is found or the stack underflows
+                while ( !opStack.empty() ) {
+                    Token_t op = opStack.top();
+                    opStack.pop();
+                    if ( op.type == TokenType::OpenBracket ) {
+                        // tried to match a square bracket and parenthesis
+                        if ( op.bracket != tok.bracket ) { throw parse_error("Mismatched Bracket Types"); }
+                        matched = true;
+                        break;
+                    } else {
+                        output.push(op);
+                    }
+                }
+                if ( !matched ) { throw parse_error("Unbalanced Brackets"); }
+            } break;
+
+            case TokenType::Operator: {
+                lastTokenWasOpenBracket = false;
+                for (;;) {
+                    if ( opStack.empty() ) { break; }
+                    Token_t op = opStack.top();
+                    if ( op.type == TokenType::OpenBracket ) { break; }
+                    if ( precedence[op.op] > precedence[tok.op] || (precedence[op.op] == precedence[tok.op] && isLeftAssociatve[tok.op]) ) {
+                        opStack.pop();
+                        output.push(op);
+                        continue;
+                    }
+                    break;
+                }
+                opStack.push(tok);
+            } break;
+        }
     }
-}
 
-void shunyard(const string& input){
-    for (int i = 0; i < input.size(); i++){
-        if (isspace(input[i])){
-            continue;
-        }
-        if (isdigit(input[i]) || input[i] == '.'){
-            print << input[i];
-        }
-        else if (input[i] == '('){
-            opStack.push('(');
-        }
-        else if (input[i] == ')'){
-            while (!opStack.empty() && opStack.top() != '('){
-                print << opStack.top();
-                opStack.pop();
-            }
-            opStack.pop();
-        }
-        else if (opMap.count(input[i])){
-            print << ' ';
-            while (!opStack.empty() && opStack.top() != '(' && opMap[opStack.top()] >= opMap[input[i]]){
-                print << opStack.top();
-                opStack.pop();
-            }
-            opStack.push(input[i]);
-        }
-        
-    }
-    while (!opStack.empty()){
-        print << ' ' << opStack.top();
+    // all tokens have been parsed, pop opStack to output:
+    while ( !opStack.empty() ) {
+        Token_t op = opStack.top();
         opStack.pop();
+        if ( op.type == TokenType::OpenBracket ) { throw parse_error("Unbalanced Brackets"); }
+        output.push(op);
     }
 
-}
-
-float calculate(const string& input){
-    stack <float> solve;
-    float num1, num2;
-    for (int i = 0; i < input.size(); i++){
-        if (isspace(input[i])){
-            continue;
-        }
-        if (isdigit(input[i]) || input[i] == '.'){
-            float num = 0;
-            while (isdigit(input[i]) || input[i] == '.'){
-                num = num * 10 + input[i] - '0';
-                i++;
-            }
-            i--;
-            solve.push(num);
-        }
-        else if (opMap.count(input[i])){
-            num2 = solve.top();
-            solve.pop();
-            num1 = solve.top();
-            solve.pop();
-            solve.push(math(num1, num2, input[i]));
-        }
-    }
-    return solve.top();
-}
-
-int main(){
-    string input = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
-    shunyard(input);
-    cout << print.str() << endl;
-    cout << calculate(print.str()) << endl;
-    return 0;
+    return output;
 }

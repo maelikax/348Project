@@ -14,11 +14,14 @@
  *   29 November 2023
  *****/
 
+#ifndef TOKEN_HPP
+#define TOKEN_HPP
+
 #include <string>
 #include <queue>
 
 enum class TokenType   { Number, OpenBracket, CloseBracket, Operator };
-enum class Operator    { Add, Sub, Neg, Mul, Div, Mod, Exp };
+enum class Operator    { Add, Pos, Sub, Neg, Mul, Div, Mod, Exp };
 enum class BracketType { Square, Paren };
 
 struct Token_t {
@@ -31,3 +34,5 @@ struct Token_t {
 };
 
 std::queue<Token_t> Tokenize( std::string input );
+
+#endif // TOKEN_HPP

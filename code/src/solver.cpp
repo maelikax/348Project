@@ -24,62 +24,70 @@
 #include "solver.hpp"
 #include "token.hpp"
 using std::string;
+using std::queue;
 
-// print token list, for debugging:
-#include <iostream>
-using std::cout;
-using std::endl;
+#include "shunyard.hpp"
+#include "rpn.hpp"
+
+// // print token list, for debugging:
+// #include <iostream>
+// using std::cout;
+// using std::endl;
+
+// static void printTokenList( queue<Token_t> tokens) {
+//     while ( !tokens.empty() ) {
+//         auto tok = tokens.front();
+//         tokens.pop();
+
+//         switch ( tok.type ) {
+//             case TokenType::Number: {
+//                 cout << tok.value;
+//             } break;
+//             case TokenType::Operator: {
+//                 switch ( tok.op ) {
+//                     case Operator::Add: {
+//                         cout << '+';
+//                     } break;
+//                     case Operator::Pos: {
+//                         cout << '@';
+//                     } break;
+//                     case Operator::Sub: {
+//                         cout << '-';
+//                     } break;
+//                     case Operator::Neg: {
+//                         cout << '~';
+//                     } break;
+//                     case Operator::Mul: {
+//                         cout << '*';
+//                     } break;
+//                     case Operator::Div: {
+//                         cout << '/';
+//                     } break;
+//                     case Operator::Mod: {
+//                         cout << '%';
+//                     } break;
+//                     case Operator::Exp: {
+//                         cout << '^';
+//                     } break;
+//                 }
+//             } break;
+//             case TokenType::OpenBracket: {
+//                 cout << (tok.bracket == BracketType::Paren ? '(' : '[');
+//             } break;
+//             case TokenType::CloseBracket: {
+//                 cout << (tok.bracket == BracketType::Paren ? ')' : ']');
+//             } break;
+//         }
+//         cout << ',';
+//     }
+//     cout << endl;
+// }
 
 // Public interface: just this function!
 double ComputeExpression( string input ) {
-    auto tokens = Tokenize(input);
-
-    // print token list, for debugging:
-    while ( !tokens.empty() ) {
-        auto tok = tokens.front();
-        tokens.pop();
-
-        switch ( tok.type ) {
-            case TokenType::Number: {
-                cout << tok.value;
-            } break;
-            case TokenType::Operator: {
-                switch ( tok.op ) {
-                    case Operator::Add: {
-                        cout << '+';
-                    } break;
-                    case Operator::Sub: {
-                        cout << '-';
-                    } break;
-                    case Operator::Neg: {
-                        cout << '~';
-                    } break;
-                    case Operator::Mul: {
-                        cout << '*';
-                    } break;
-                    case Operator::Div: {
-                        cout << '/';
-                    } break;
-                    case Operator::Mod: {
-                        cout << '%';
-                    } break;
-                    case Operator::Exp: {
-                        cout << '^';
-                    } break;
-                }
-            } break;
-            case TokenType::OpenBracket: {
-                cout << (tok.bracket == BracketType::Paren ? '(' : '[');
-            } break;
-            case TokenType::CloseBracket: {
-                cout << (tok.bracket == BracketType::Paren ? ')' : ']');
-            } break;
-        }
-    }
-    cout << endl;
-
-    // TODO: Shunting Yard
-    // TODO: RPN
-
-    return (double)tokens.size();
+    queue<Token_t> tokens = Tokenize(input);
+    // printTokenList(tokens);
+    tokens = shunyard(tokens);
+    // printTokenList(tokens);
+    return evalrpn(tokens);
 }
