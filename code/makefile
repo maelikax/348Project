@@ -9,8 +9,8 @@ ODIR=obj
 
 
 CC=g++
-#CFLAGS=-I$(IDIR) -O3 -std=c++11
-CFLAGS=-I$(IDIR) -g -Og -Wall -Werror -Wpedantic -std=c++11
+CFLAGS=-I$(IDIR) -O3 -std=c++11
+#CFLAGS=-I$(IDIR) -g -Og -Wall -Werror -Wpedantic -std=c++11
 LIBS=-lm
 
 
