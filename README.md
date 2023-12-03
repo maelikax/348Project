@@ -24,4 +24,4 @@
 - You may also use parentheses () and brackets []
 - If you're ready to exit, type 'quit' or use Ctrl+D
 
-<p>For more details on how to use our program, look at our [User's Manual](https://github.com/maelikax/348Project/blob/main/UPEDU%20Documents/UsersManual.pdf)</p>
+For more details on how to use our program, look at our [User's Manual]([https://github.com/maelikax/348Project/blob/main/UPEDU%20Documents/UsersManual.pdf](https://github.com/maelikax/348Project/blob/main/UPEDU%20Documents/UsersManual.pdf))
