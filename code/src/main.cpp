@@ -34,6 +34,9 @@ using std::string;
 // using parse_error, ComputeExpression
 
 int main() {
+    // uncommet function below - runs test cases
+    // runTests();
+
     // first line is empty to look pretty
     cout << "                                                  \n"
          << "              ==== TEAM ORANGE ====               \n"

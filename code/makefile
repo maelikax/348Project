@@ -14,10 +14,10 @@ CFLAGS=-I$(IDIR) -O3 -std=c++11
 LIBS=-lm
 
 
-_DEPS = solver.hpp token.hpp shunyard.hpp rpn.hpp
+_DEPS = solver.hpp token.hpp shunyard.hpp rpn.hpp tests.hpp
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o solver.o token.o shunyard.o rpn.o
+_OBJ = main.o solver.o token.o shunyard.o rpn.o tests.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # TODO: make object files only depend on the headers they actually use!
