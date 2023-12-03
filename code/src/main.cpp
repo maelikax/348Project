@@ -33,6 +33,8 @@ using std::string;
 #include "solver.hpp"
 // using parse_error, ComputeExpression
 
+#include "tests.hpp"
+
 int main() {
     // uncommet function below - runs test cases
     // runTests();
