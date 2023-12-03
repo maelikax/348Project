@@ -53,6 +53,8 @@ int main() {
          << " - multiplication (a * b)                         \n"
          << " - division (a / b)                               \n"
          << " - exponentiation (a ^ b or a ** b)               \n"
+         << " - scientific notation (aeb)                      \n"
+         << " - modulo (a % b)                                 \n"
          << "                                                  \n"
          << "For precedence handling, both parentheses `()` and\n"
          << "square brackets `[]` are supported!               \n"
