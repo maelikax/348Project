@@ -36,7 +36,7 @@ using std::string;
 #include "tests.hpp"
 
 int main() {
-    // uncommet function below - runs test cases
+    // uncomment function below - runs test cases
     // runTests();
 
     // first line is empty to look pretty

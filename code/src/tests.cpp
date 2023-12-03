@@ -15,27 +15,40 @@
 #include <iostream>
 #include "solver.hpp"
 
+// tests valid expressions -- makes sure that the result is the same as the expected result
 void validTest(const std::string& input, double expectedResult, const std::string& testCase, double tolerance = 1e-6) {
     try {
+        // parse the expression and compute
         double result = ComputeExpression(input);
+
+        // verify if the result falls within the tolerance of the expected result
         if (std::abs(result - expectedResult) < tolerance) {
             std::cout << testCase << ": Passed " << "Result: " << result << std::endl;
         } else {
+            // it result doesn't fall within tolerance, print a message and show results
             std::cout << testCase << ": Failed\n";
             std::cout << "  Expected: " << expectedResult << ", Actual: " << result << "\n";
         }
     } catch (const parse_error& err) {
+        // if an exception occurs, print a message with the error
         std::cout << testCase << ": Failed\n";
         std::cout << "  Error: " << err.what() << "\n";
     }
 }
 
+
+// tests valid expressions -- makes sure that the result is the same as the expected result
 void invalidTest(const std::string& input, const std::string& expectedError, const std::string& testCase) {
     try {
+        // parse the expression and compute
         double result = ComputeExpression(input);
+
+        // if parsing and computing pass, print a message
         std::cout << testCase << ": Failed\n";
         std::cout << "Expected failure, but got: " << result << "\n";
     } catch (const parse_error& err) {
+        // if an exception occurs, check if message matches the expected error
+        // if it matches, print 'Passed', else print a message and show results
         if (err.what() == expectedError) {
             std::cout << testCase << ": Passed " << "Error: " << err.what() << std::endl;
         } else {
@@ -44,6 +57,7 @@ void invalidTest(const std::string& input, const std::string& expectedError, con
     }
 }
 
+// function that will run the following test cases
 void runTests() {
     validTest("3 + 4", 7, "TC01");
     validTest("8 - (5 - 2)", 5, "TC02");
@@ -74,6 +88,7 @@ void runTests() {
 
     validTest("3.14 + 2.5", 5.64, "TC26");
 
+    // testing large numbers, testing is done similarly as above
     double base_TC27 = 1000000;
     double exponent_TC27 = 2;
     double expected_result_TC27 = std::pow(base_TC27, exponent_TC27);
